@@ -5,8 +5,11 @@ Summary: Add your description here
 Author-email: "noe.marx" <noejadenmarx@gmail.com>
 Requires-Python: >=3.12
 Description-Content-Type: text/markdown
+Requires-Dist: cryptography>=48.0.0
 Requires-Dist: dotenv>=0.9.9
 Requires-Dist: fastapi>=0.136.1
 Requires-Dist: postgres
+Requires-Dist: pyjwt>=2.12.1
+Requires-Dist: requests>=2.34.2
 Requires-Dist: sqlalchemy>=2.0.49
 Requires-Dist: uvicorn>=0.47.0

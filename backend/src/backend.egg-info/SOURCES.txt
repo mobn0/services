@@ -12,6 +12,7 @@ src/backend/app/__init__.py
 src/backend/app/dependencies.py
 src/backend/app/main.py
 src/backend/app/core/__init__.py
+src/backend/app/core/auth.py
 src/backend/app/core/config.py
 src/backend/app/db/__init__.py
 src/backend/app/db/database.py
@@ -20,3 +21,4 @@ src/backend/app/health/model.py
 src/backend/app/health/router.py
 src/backend/app/health/schemas.py
 src/backend/app/health/service.py
+src/backend/app/user/__init__.py
