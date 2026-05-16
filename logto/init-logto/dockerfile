@@ -1,0 +1,7 @@
+FROM alpine:latest
+
+RUN apk add --no-cache bash curl jq openssl 
+
+COPY ./init_backend_in_logto.sh /init_backend_in_logto.sh
+
+CMD [ "bash", "/init_backend_in_logto.sh" ]

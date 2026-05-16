@@ -53,8 +53,8 @@ services:
       LOGTO_DB_PASSWORD: ${LOGTO_DB_PASSWORD}
       LOGTO_DB: ${LOGTO_DB}
     volumes:
-      - ./database_init/init-logto.sh:/init-logto.sh:ro
-    command: [ "sh", "/init-logto.sh" ]
+      - ./logto/init-logto-db.sh:/init-logto-db.sh:ro
+    command: [ "sh", "/init-logto-db.sh" ]
     networks:
       - db-network
     depends_on:
@@ -78,6 +78,26 @@ services:
     volumes:
       - ./logto/start.sh:/start.sh:ro
     entrypoint: ["/bin/sh", "/start.sh"]
+    networks:
+      - db-network
+  
+  init_logto:
+    build:
+      context: ./logto/init-logto
+    depends_on:
+      logto:
+        condition: service_started
+    
+    environment:
+      LOGTO_ENDPOINT: ${LOGTO_ENDPOINT_INTERNAL}
+      LOGTO_MANAGEMENT_API_RESOURCE: ${LOGTO_MANAGEMENT_API_RESOURCE}
+      LOGTO_M2M_APP_ID: ${LOGTO_M2M_APP_ID}
+      LOGTO_M2M_APP_SECRET: ${LOGTO_M2M_APP_SECRET}
+      APP_NAME: ${APP_NAME}
+      APP_TYPE: ${APP_TYPE}
+      APP_REDIRECT_URI: ${APP_REDIRECT_URI}
+      APP_POST_LOGOUT_REDIRECT_URI: ${APP_POST_LOGOUT_REDIRECT_URI} 
+      APP_CORS_ORIGIN: ${APP_CORS_ORIGIN}
     networks:
       - db-network
 
