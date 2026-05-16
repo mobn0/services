@@ -1,0 +1,28 @@
+FROM python:3.12-alpine3.23 as base
+
+FROM base AS builder
+
+COPY --from=docker.io/astral/uv:latest /uv /uvx /bin/
+ENV UV_LINK_MODE=copy \
+    UV_COMPILE_BYTECODE=1 \
+    UV_PYTHON_DOWNLOADS=never
+
+WORKDIR /app
+
+COPY pyproject.toml uv.lock ./
+RUN uv sync --no-dev --locked --no-editable --no-install-project
+
+COPY README.md src ./
+RUN uv sync --no-dev --locked --no-editable
+
+FROM base AS runtime
+
+COPY --from=builder --chown=root:root /app/.venv /app/.venv
+
+RUN chmod -R o=rx /app
+
+RUN adduser -D -H worker
+USER worker
+
+ENV PYTHONPATH=/app/.venv/lib/python3.12/site-packages
+CMD ["python", "-m", "backend"]
