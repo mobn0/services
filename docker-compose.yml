@@ -12,7 +12,7 @@ services:
       LOGTO_PUBLIC_DOMAIN: ${LOGTO_PUBLIC_DOMAIN}
       LOGTO_ENDPOINT_INTERNAL: ${LOGTO_ENDPOINT_INTERNAL}
     ports:
-      - "8000:8000"
+      - "${BACKEND_PORT}:8000"
     depends_on:
       db-init:
         condition: service_completed_successfully
@@ -41,7 +41,6 @@ services:
 
     volumes:
       - db-data:/var/lib/postgresql/data
-      - ./database/init:/docker-entrypoint-initdb.d
 
   db-init:
     image: postgres:16.14-alpine3.23
@@ -97,10 +96,20 @@ services:
       APP_NAME: ${APP_NAME}
       APP_TYPE: ${APP_TYPE}
       APP_REDIRECT_URI: ${APP_REDIRECT_URI}
-      APP_POST_LOGOUT_REDIRECT_URI: ${APP_POST_LOGOUT_REDIRECT_URI} 
-      APP_CORS_ORIGIN: ${APP_CORS_ORIGIN}
+      APP_POST_LOGOUT_REDIRECT_URI: ${FRONTEND_DOMAIN} 
+      APP_CORS_ORIGIN: ${FRONTEND_DOMAIN}
     networks:
       - db-network
+  
+  frontend:
+    build: 
+      context: ./frontend
+    environment:
+      VITE_LOGTO_ENDPOINT: ${LOGTO_PUBLIC_DOMAIN}
+      VITE_LOGTO_APP_ID: ${VITE_LOGTO_APP_ID}
+      VITE_APP_URL: ${FRONTEND_DOMAIN}
+    ports:
+      - "${FRONTEND_PORT}:80"
 
 networks:
   db-network:
