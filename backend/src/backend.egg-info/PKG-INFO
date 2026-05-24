@@ -8,6 +8,7 @@ Description-Content-Type: text/markdown
 Requires-Dist: cryptography>=48.0.0
 Requires-Dist: dotenv>=0.9.9
 Requires-Dist: fastapi>=0.136.1
+Requires-Dist: passlib>=1.7.4
 Requires-Dist: postgres
 Requires-Dist: pyjwt>=2.12.1
 Requires-Dist: requests>=2.34.2

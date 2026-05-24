@@ -19,8 +19,15 @@ services:
       - devcontainer-network
   
   backend:
+
     networks:
       - devcontainer-network
+    volumes:
+      - ./backend/src:/app/src
+      
+    environment:
+      - PYTHONPATH=/app/src:/app/.venv/lib/python3.12/site-packages
+    command: python -m uvicorn backend.app.main:app --host 0.0.0.0 --port 8000 --reload --reload-dir /app/src
 
   db:
     networks:

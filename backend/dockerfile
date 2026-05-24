@@ -25,4 +25,5 @@ RUN adduser -D -H worker
 USER worker
 
 ENV PYTHONPATH=/app/.venv/lib/python3.12/site-packages
+
 CMD ["python", "-m", "backend"]

@@ -1,6 +1,7 @@
 cryptography>=48.0.0
 dotenv>=0.9.9
 fastapi>=0.136.1
+passlib>=1.7.4
 postgres
 pyjwt>=2.12.1
 requests>=2.34.2
