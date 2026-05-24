@@ -4,7 +4,7 @@ from requests import get
 from backend.app.core.config import LOGTO_ENDPOINT_INTERNAL
 from backend.app.health.schemas import HealthCheckResponse
 
-def health_check(db: Session):
+def health_check_service(db: Session):
     server_status = "ok"
 
     db.execute(text("SELECT 1"))

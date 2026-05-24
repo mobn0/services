@@ -1,5 +1,4 @@
-from pydantic import BaseModel, ConfigDict
-from backend.app.user.model import User
+from pydantic import BaseModel
 
 class Me(BaseModel):
     user: dict

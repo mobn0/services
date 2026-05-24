@@ -1,6 +1,10 @@
-from backend.app.db.database import Base
 from sqlalchemy.orm import mapped_column, Mapped, relationship
 from sqlalchemy import String, Integer, ForeignKey, UniqueConstraint
+from typing import TYPE_CHECKING
+from backend.app.db.database import Base
+
+if TYPE_CHECKING:
+    from backend.app.apikey.model import Apikey
 
 class Identity(Base):
     __tablename__ = "identity"
@@ -21,3 +25,8 @@ class User(Base):
     
 
     identity: Mapped[Identity] = relationship("Identity", backref="user", uselist=False)
+
+    apikeys: Mapped[list["Apikey"]] = relationship(
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
