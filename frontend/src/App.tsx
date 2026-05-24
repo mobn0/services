@@ -4,9 +4,16 @@ import viteLogo from './assets/vite.svg';
 import heroImg from './assets/hero.png';
 import './App.css';
 
+
+
 function App() {
-  const { signIn, signOut, isAuthenticated } = useLogto();
+  const { signIn, signOut, isAuthenticated, getAccessToken } = useLogto();
   const appUrl = window.__APP_CONFIG__.APP_URL;
+  async function showApiToken() {
+    const token = await getAccessToken(window.__APP_CONFIG__.BACKEND_DOMAIN);
+    console.log(token);
+  }
+  console.log(window.__APP_CONFIG__.BACKEND_DOMAIN);
   return (
     <>
       <section id="center">
@@ -23,6 +30,14 @@ function App() {
               ? 'You are logged in with Logto.'
               : 'Sign in to continue.'}
           </p>
+        </div>
+
+        <div>
+          {isAuthenticated
+            ? <button type="button" onClick={showApiToken}>
+              Show API token
+            </button>
+            : ""}
         </div>
 
         {isAuthenticated ? (

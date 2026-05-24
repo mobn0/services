@@ -11,6 +11,7 @@ declare global {
       LOGTO_ENDPOINT: string;
       LOGTO_APP_ID: string;
       APP_URL: string;
+      BACKEND_DOMAIN: string;
     };
   }
 }
@@ -18,6 +19,7 @@ declare global {
 const config: LogtoConfig = {
   endpoint: window.__APP_CONFIG__.LOGTO_ENDPOINT,
   appId: window.__APP_CONFIG__.LOGTO_APP_ID,
+  resources: [window.__APP_CONFIG__.BACKEND_DOMAIN],
 };
 
 function Callback() {
