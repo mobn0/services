@@ -7,5 +7,5 @@ from backend.app.apikey.service import create_api_key_service
 router = APIRouter(prefix="/apikey", tags=["apikey"])
 
 @router.post("/create", response_model=ApikeyCreateResponse)
-def create_api_key(params: ApikeyCreate, current_user = Depends(get_current_user), db: Session = Depends(get_db)):
+async def create_api_key(params: ApikeyCreate, current_user = Depends(get_current_user), db: Session = Depends(get_db)):
     return create_api_key_service(params.name, params.description, current_user, db)

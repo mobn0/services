@@ -7,5 +7,5 @@ from backend.app.user.model import User
 router = APIRouter(prefix="/user", tags=["user"])
 
 @router.get("/me", response_model=Me)
-def me(current_user: User = Depends(get_current_user)) -> Me:
+async def me(current_user: User = Depends(get_current_user)) -> Me:
     return me_service(current_user)

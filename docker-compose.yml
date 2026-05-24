@@ -11,11 +11,14 @@ services:
       BACKEND_DOMAIN: ${BACKEND_DOMAIN}
       LOGTO_PUBLIC_DOMAIN: ${LOGTO_PUBLIC_DOMAIN}
       LOGTO_ENDPOINT_INTERNAL: ${LOGTO_ENDPOINT_INTERNAL}
+      IMAGESTORE_DB_PATH: ${IMAGESTORE_DB_PATH}
     ports:
       - "${BACKEND_PORT}:8000"
     depends_on:
       db-init:
         condition: service_completed_successfully
+    volumes:
+      - imagestore-db:${IMAGESTORE_DB_PATH}:ro
     networks:
       - db-network
 
@@ -122,3 +125,4 @@ networks:
 
 volumes:
   db-data:
+  imagestore-db:

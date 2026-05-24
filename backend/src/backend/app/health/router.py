@@ -7,5 +7,5 @@ from backend.app.health.service import health_check_service
 router = APIRouter(prefix="/health", tags=["health"])
 
 @router.get("/", response_model=HealthCheckResponse)
-def health_check(db: Session = Depends(get_db)) -> HealthCheckResponse:
+async def health_check(db: Session = Depends(get_db)) -> HealthCheckResponse:
     return health_check_service(db)

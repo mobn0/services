@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 from backend.app.db.database import Base
 
 if TYPE_CHECKING:
+    from backend.app.imagestore.model import StoredImage
     from backend.app.user.model import User
 
 class Apikey(Base):
@@ -29,3 +30,9 @@ class Apikey(Base):
     )
 
     user: Mapped["User"] = relationship(back_populates="apikeys")
+
+    
+    storedimages: Mapped[list["StoredImage"]] = relationship(
+        back_populates="apikey",
+        cascade="all, delete-orphan",
+    )
