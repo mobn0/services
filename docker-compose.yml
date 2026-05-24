@@ -29,6 +29,9 @@ services:
       LOGTO_DB_USER: ${LOGTO_DB_USER}
       LOGTO_DB_PASSWORD: ${LOGTO_DB_PASSWORD}
       LOGTO_DB: ${LOGTO_DB}
+    
+    ports:
+      - "5432:5432"
 
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB" ]
@@ -98,6 +101,7 @@ services:
       APP_REDIRECT_URI: ${APP_REDIRECT_URI}
       APP_POST_LOGOUT_REDIRECT_URI: ${FRONTEND_DOMAIN} 
       APP_CORS_ORIGIN: ${FRONTEND_DOMAIN}
+      BACKEND_DOMAIN: ${BACKEND_DOMAIN}
     networks:
       - db-network
   

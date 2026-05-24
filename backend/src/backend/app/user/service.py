@@ -1,2 +1,10 @@
-def get_me(current_user: dict) -> dict:
-    return {"decoded": current_user}
+from backend.app.user.model import User
+from backend.app.user.schemas import Me
+
+
+def get_me(current_user: User) -> Me:
+    return Me(user={
+        "id": current_user.id,
+        "iss": current_user.identity.iss,
+        "sub": current_user.identity.sub
+    })

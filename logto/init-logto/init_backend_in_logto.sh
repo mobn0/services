@@ -11,6 +11,7 @@ required_vars=(
   APP_REDIRECT_URI
   APP_POST_LOGOUT_REDIRECT_URI
   APP_CORS_ORIGIN
+  BACKEND_DOMAIN
 )
 
 for var in "${required_vars[@]}"; do
@@ -20,11 +21,10 @@ for var in "${required_vars[@]}"; do
   fi
 done
 
-until curl -fsS "$LOGTO_ENDPOINT/oidc/.well-known/openid-configuration" > /dev/null;
-    do
-      echo "Waiting for Logto...";
-      sleep 3;
-    done 
+until curl -fsS "$LOGTO_ENDPOINT/oidc/.well-known/openid-configuration" > /dev/null; do
+  echo "Waiting for Logto..."
+  sleep 3
+done
 
 TOKEN_RESPONSE=$(
   curl -sS -X POST "$LOGTO_ENDPOINT/oidc/token" \
@@ -41,6 +41,31 @@ if [ -z "$ACCESS_TOKEN" ]; then
   echo "Failed to get Management API access token:"
   echo "$TOKEN_RESPONSE" | jq
   exit 1
+fi
+
+EXISTING_RESOURCES=$(
+  curl -sS "$LOGTO_ENDPOINT/api/resources" \
+    -H "Authorization: Bearer $ACCESS_TOKEN"
+)
+
+RESOURCE_ID=$(
+  echo "$EXISTING_RESOURCES" |
+    jq -r --arg indicator "$BACKEND_DOMAIN" '.[] | select(.indicator == $indicator) | .id' |
+    head -n 1
+)
+
+if [ -n "$RESOURCE_ID" ]; then
+  echo "API resource already exists: $BACKEND_DOMAIN"
+else
+  echo "Creating API resource: $BACKEND_DOMAIN"
+
+  curl -sS -X POST "$LOGTO_ENDPOINT/api/resources" \
+    -H "Authorization: Bearer $ACCESS_TOKEN" \
+    -H "Content-Type: application/json" \
+    -d "{
+      \"name\": \"Backend API\",
+      \"indicator\": \"$BACKEND_DOMAIN\"
+    }" | jq
 fi
 
 EXISTING_APPS=$(
@@ -89,9 +114,13 @@ FINAL_APP_ID=$(echo "$APP_RESPONSE" | jq -r '.id // empty')
 FINAL_APP_SECRET=$(echo "$APP_RESPONSE" | jq -r '.secret // empty')
 
 echo ""
-echo "Next.js env values:"
-echo "LOGTO_ENDPOINT=$LOGTO_ENDPOINT"
-echo "LOGTO_APP_ID=$FINAL_APP_ID"
-echo "LOGTO_APP_SECRET=$FINAL_APP_SECRET"
-echo "LOGTO_BASE_URL=$APP_CORS_ORIGIN"
+echo "Frontend env values:"
+echo "VITE_LOGTO_ENDPOINT=$LOGTO_ENDPOINT"
+echo "VITE_LOGTO_APP_ID=$FINAL_APP_ID"
+echo "VITE_APP_URL=$APP_CORS_ORIGIN"
+echo "VITE_LOGTO_RESOURCE=$BACKEND_DOMAIN"
+echo ""
+echo "Backend env values:"
+echo "BACKEND_DOMAIN=$BACKEND_DOMAIN"
+echo "LOGTO_PUBLIC_DOMAIN=$LOGTO_ENDPOINT"
 echo "LOGTO_COOKIE_SECRET=$(openssl rand -hex 32)"
