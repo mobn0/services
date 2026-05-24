@@ -1,0 +1,24 @@
+{
+    "name": "services-dev",
+    "dockerComposeFile": [
+        "../docker-compose.yml",
+        "./docker-compose.yml"
+    ],
+    "service": "devcontainer",
+    "workspaceFolder": "/workspaces/services",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-python.python",
+                "ms-python.vscode-pylance",
+                "ms-python.black-formatter",
+                "charliermarsh.ruff",
+                "ms-azuretools.vscode-docker",
+                "esbenp.prettier-vscode",
+                "dbaeumer.vscode-eslint",
+                "mtxr.sqltools"
+            ]
+        }
+    },
+
+}

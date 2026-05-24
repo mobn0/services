@@ -1,0 +1,31 @@
+services:
+  devcontainer:
+    build:
+      dockerfile: .devcontainer/Dockerfile
+
+    volumes:
+      - .:/workspaces/services:cached
+
+    command: sleep infinity
+    networks:
+      - devcontainer-network
+
+  logto:
+    networks:
+      - devcontainer-network
+    
+  frontend:
+    networks:
+      - devcontainer-network
+  
+  backend:
+    networks:
+      - devcontainer-network
+
+  db:
+    networks:
+      - devcontainer-network
+
+networks:
+  devcontainer-network:
+    driver: bridge
