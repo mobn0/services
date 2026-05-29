@@ -1,6 +1,7 @@
 services:
   backend:
     build:
+      image: mobn0/services-backend:latest
       context: ./backend
     environment:
       DATABASE_HOST: db
@@ -89,6 +90,7 @@ services:
   
   init_logto:
     build:
+      image: mobn0/services-init-logto:latest
       context: ./logto/init-logto
     depends_on:
       logto:
@@ -110,6 +112,7 @@ services:
   
   frontend:
     build: 
+      image: mobn0/services-frontend:latest
       context: ./frontend
     environment:
       VITE_LOGTO_ENDPOINT: ${LOGTO_PUBLIC_DOMAIN}
