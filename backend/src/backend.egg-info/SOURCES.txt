@@ -1,5 +1,6 @@
 README.md
 pyproject.toml
+src/__init__.py
 src/backend/__init__.py
 src/backend/__main__.py
 src/backend/py.typed
@@ -19,6 +20,7 @@ src/backend/app/apikey/service.py
 src/backend/app/core/__init__.py
 src/backend/app/core/auth.py
 src/backend/app/core/config.py
+src/backend/app/core/imagestore.py
 src/backend/app/core/security.py
 src/backend/app/db/__init__.py
 src/backend/app/db/database.py
@@ -26,6 +28,11 @@ src/backend/app/health/__init__.py
 src/backend/app/health/router.py
 src/backend/app/health/schemas.py
 src/backend/app/health/service.py
+src/backend/app/imagestore/__init__.py
+src/backend/app/imagestore/model.py
+src/backend/app/imagestore/router.py
+src/backend/app/imagestore/schema.py
+src/backend/app/imagestore/service.py
 src/backend/app/user/__init__.py
 src/backend/app/user/model.py
 src/backend/app/user/router.py

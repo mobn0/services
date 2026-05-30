@@ -15,6 +15,7 @@ services:
       IMAGESTORE_DB_PATH: ${IMAGESTORE_DB_PATH}
     ports:
       - "${BACKEND_PORT}:8000"
+    restart: always
     depends_on:
       db-init:
         condition: service_completed_successfully
@@ -22,6 +23,8 @@ services:
       - imagestore-db:${IMAGESTORE_DB_PATH}:ro
     networks:
       - db-network
+      - logto-network
+      - garage-network
 
   db:
     image: postgres:16.14-alpine3.23
@@ -36,6 +39,8 @@ services:
     
     ports:
       - "5432:5432"
+    
+    restart: always
 
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB" ]
@@ -64,6 +69,7 @@ services:
     command: [ "sh", "/init-logto-db.sh" ]
     networks:
       - db-network
+      - logto-network
     depends_on:
       db:
         condition: service_healthy
@@ -76,6 +82,7 @@ services:
     ports:
       - "${LOGTO_PUBLIC_PORT}:3001"
       - "${LOGTO_ADMIN_PORT}:3002"
+    restart: always
     environment:
       DB_URL: postgres://${LOGTO_DB_USER}:${LOGTO_DB_PASSWORD}@db:5432/${LOGTO_DB}
       ENDPOINT: ${LOGTO_PUBLIC_DOMAIN}
@@ -87,6 +94,8 @@ services:
     entrypoint: ["/bin/sh", "/start.sh"]
     networks:
       - db-network
+      - logto-network
+
   
   init_logto:
     image: mobn0/services-init-logto:latest
@@ -95,6 +104,8 @@ services:
     depends_on:
       logto:
         condition: service_started
+    
+    restart: always
     
     environment:
       LOGTO_ENDPOINT: ${LOGTO_ENDPOINT_INTERNAL}
@@ -108,12 +119,13 @@ services:
       APP_CORS_ORIGIN: ${FRONTEND_DOMAIN}
       BACKEND_DOMAIN: ${BACKEND_DOMAIN}
     networks:
-      - db-network
+      - logto-network
   
   frontend:
     image: mobn0/services-frontend:latest
     build:
       context: ./frontend
+    restart: always
     environment:
       VITE_LOGTO_ENDPOINT: ${LOGTO_PUBLIC_DOMAIN}
       VITE_LOGTO_APP_ID: ${VITE_LOGTO_APP_ID}
@@ -122,10 +134,37 @@ services:
     ports:
       - "${FRONTEND_PORT}:80"
 
+  garage:
+    image:  dxflrs/garage:v2.3.0
+    restart: always
+    command: /garage -c /etc/garage.toml server
+
+    environment:
+      GARAGE_RPC_SECRET: ${GARAGE_RPC_SECRET}
+      GARAGE_S3_API_ROOT_DOMAIN: ${GARAGE_S3_API_ROOT_DOMAIN}
+      GARAGE_RPC_PUBLIC_ADDR: ${GARAGE_RPC_PUBLIC_ADDR}
+
+    ports:
+      - ${GARAGE_S3_API_PORT}:3900
+    
+    volumes:
+      - ./garage/garage.toml:/etc/garage.toml:ro
+      - garage-meta:/var/lib/garage/meta:rw
+      - garage-data:/var/lib/garage/data:rw
+    
+    networks:
+      - garage-network
+
 networks:
   db-network:
+    driver: bridge
+  garage-network:
+    driver: bridge
+  logto-network:
     driver: bridge
 
 volumes:
   db-data:
   imagestore-db:
+  garage-meta:
+  garage-data:

@@ -32,6 +32,13 @@ services:
   db:
     networks:
       - devcontainer-network
+    
+  garage:
+    networks:
+      - devcontainer-network
+
+    ports:
+      - 3902:3902
 
 networks:
   devcontainer-network:
