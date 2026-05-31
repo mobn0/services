@@ -105,7 +105,6 @@ services:
       logto:
         condition: service_started
     
-    restart: always
     
     environment:
       LOGTO_ENDPOINT: ${LOGTO_ENDPOINT_INTERNAL}
